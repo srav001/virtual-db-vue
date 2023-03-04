@@ -1,1 +1,4 @@
-.eslintrc.cjs
+* This ignores root files & root directories, then un-ignores the root src directory *
+/*
+/*/
+!/src/

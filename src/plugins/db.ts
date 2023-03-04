@@ -1,11 +1,15 @@
-import { shallowReactive, toRaw } from 'vue';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { defineStore } from 'pinia';
-import { getFromCache, setToCache } from './cacheAdapter';
+import { shallowReactive } from 'vue';
 import { deepClone, get, set } from '@/utilities/common';
+import { getFromCache, setToCache } from './cacheAdapter';
 
 import type { Store, StoreDefinition, PiniaCustomStateProperties } from 'pinia';
 
-type TypesOfState = Record<string, string | boolean | number | null | Array<unknown> | Record<string, unknown>>;
+export type GenericObject<T = unknown> = Record<string, T>;
+export type GenericArray<T = unknown> = Array<T>;
+
+export type TypesOfState = Record<string, string | boolean | number | null | GenericArray | GenericObject>;
 export type BasicTable = {
 	name: string;
 	state: TypesOfState;
@@ -14,7 +18,7 @@ export type BasicTable = {
 	useCache?: boolean;
 };
 
-const CACHE_KEY = 'bnw-cache-stores';
+const CACHE_KEY = 'bnw-cache-db';
 const _stores: Map<string, StoreDefinition> = new Map();
 
 const _stateToStoreMap = new Map();
@@ -107,23 +111,25 @@ export const useDb = () => ({
 		return get(_coreState, key) as T;
 	},
 
-	update(key: string, callback: Function) {
+	update<T = unknown>(key: string, callback: (data: T) => T) {
 		this.temporary.key = key;
 		const data = get(_coreState, key);
-		this.temporary.data = callback(deepClone(data));
+		this.temporary.data = callback(deepClone(data) as T);
 
 		return this;
 	},
-	write(callback: Function = () => {}) {
+	write<T = unknown>(callback?: (data: T) => void) {
 		set(_coreState, this.temporary.key, this.temporary.data);
-		callback(deepClone(this.temporary.data));
+		if (callback) {
+			callback(deepClone(this.temporary.data as T));
+		}
 		handleCacheOfStore(this.temporary.key);
 		this.flush();
 
 		return this;
 	},
-	writeUpdate(key: string, callback: Function) {
-		const data = callback(deepClone(get(_coreState, key)));
+	writeUpdate<T = unknown>(key: string, callback: (data: T) => T) {
+		const data = callback(deepClone(get(_coreState, key) as T));
 		set(_coreState, key, data);
 		handleCacheOfStore(key);
 		this.flush();
@@ -134,12 +140,12 @@ export const useDb = () => ({
 	has(key: string) {
 		return get(_coreState, key) !== undefined;
 	},
-	next(callback: Function, key?: string) {
+	next<T = unknown>(callback: (data: T) => any, key?: string) {
 		let data = _coreState;
 		if (key) {
 			data = get(_coreState, key);
 		}
-		callback(deepClone(data));
+		callback(deepClone(data) as T);
 
 		return this;
 	},
@@ -248,7 +254,7 @@ function defineSetter(target: {}, key: string | symbol, value: any) {
 	if (store) {
 		const storeInstance = store();
 		if (isTable) {
-			storeInstance.$state = value;
+			storeInstance.$patch(value);
 			handleCacheOfStore(key as string);
 		} else {
 			storeInstance.$patch(state => {

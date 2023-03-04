@@ -1,0 +1,19 @@
+{
+  "name": "virtual-db-vue",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/srav001/virtual-db-vue.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/srav001/virtual-db-vue/issues"
+  },
+  "homepage": "https://github.com/srav001/virtual-db-vue#readme"
+}

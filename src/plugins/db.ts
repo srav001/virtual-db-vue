@@ -1,20 +1,20 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { defineStore } from 'pinia';
-import { shallowReactive } from 'vue';
+import { shallowReactive, toRaw } from 'vue';
 import { deepClone, get, set } from '@/utilities/common';
 import { getFromCache, setToCache } from './cacheAdapter';
 
 import type { Store, StoreDefinition, PiniaCustomStateProperties } from 'pinia';
 
-export type GenericObject<T = unknown> = Record<string, T>;
+export type GenericObject<T = unknown> = Record<string, T> & object;
 export type GenericArray<T = unknown> = Array<T>;
 
 export type TypesOfState = Record<string, string | boolean | number | null | GenericArray | GenericObject>;
 export type BasicTable = {
 	name: string;
 	state: TypesOfState;
-	getters?: {};
-	actions?: {};
+	getters?: object;
+	actions?: object;
 	useCache?: boolean;
 };
 
@@ -140,7 +140,7 @@ export const useDb = () => ({
 	has(key: string) {
 		return get(_coreState, key) !== undefined;
 	},
-	next<T = unknown>(callback: (data: T) => any, key?: string) {
+	next<T = unknown>(callback: (data: T) => void, key?: string) {
 		let data = _coreState;
 		if (key) {
 			data = get(_coreState, key);

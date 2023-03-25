@@ -1,8 +1,7 @@
 {
 	"name": "virtual-db-vue",
-	"version": "0.0.0",
-	"description": "",
-	"main": "index.js",
+	"version": "0.0.1",
+	"description": "A type safe virtual database to be used in the front-end with caching, reactivity and sync with backend baked in!",
 	"scripts": {
 		"dev": "vite",
 		"preview": "vite preview",
@@ -14,6 +13,19 @@
 		"format": "node -e 'require(\"./scripts\").format()'",
 		"project-setup": "node -e 'require(\"./scripts\").projectSetup()'"
 	},
+	"type": "module",
+	"main": "./dist/virtual-db-vue.umd.cjs",
+	"module": "./dist/virtual-db-vue.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/virtual-db-vue.js",
+			"require": "./dist/virtual-db-vue.umd.cjs"
+		}
+	},
+	"files": [
+		"dist"
+	],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/srav001/virtual-db-vue.git"
@@ -31,8 +43,8 @@
 	"devDependencies": {
 		"@commitlint/cli": "^17.4.4",
 		"@commitlint/config-conventional": "^17.4.4",
-		"@types/node": "^18.14.2",
 		"@total-typescript/ts-reset": "^0.3.7",
+		"@types/node": "^18.14.2",
 		"@typescript-eslint/eslint-plugin": "^5.54.0",
 		"@typescript-eslint/parser": "^5.54.0",
 		"@vitejs/plugin-vue": "^4.0.0",
@@ -47,6 +59,7 @@
 		"prettier": "^2.8.4",
 		"typescript": "~4.8.4",
 		"vite": "^4.1.4",
+		"vite-plugin-dts": "^2.1.0",
 		"vue": "^3.2.47",
 		"vue-tsc": "^1.2.0"
 	},

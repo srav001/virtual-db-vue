@@ -1,28 +1,36 @@
 {
-	"extends": "@vue/tsconfig/tsconfig.web.json",
-	"include": ["src/**/*.ts", "src/**/*.vue"],
-	"exclude": ["node_modules"],
-	"references": [
-		{
-			"path": "./tsconfig.node.json"
-		}
-	],
+  "references": [{ "path": "./tsconfig.node.json" }],
+
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"src/*": ["./src/*"]
 		},
+
+		/* Bundler */
 		"target": "ES2018",
 		"module": "ESNext",
-		"strict": true,
 		"jsx": "preserve",
-		"strictNullChecks": true,
 		"isolatedModules": true,
-		"preserveValueImports": true,
-		"importsNotUsedAsValues": "error",
+		"preserveValueImports": false,
+    "importsNotUsedAsValues": "remove",
+    "verbatimModuleSyntax": true,
+    "moduleResolution": "bundler",
+
+    /* Linting */
+    "strict": true,
 		"noImplicitAny": true,
+    "noUnusedLocals": true,
+		"strictNullChecks": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+
+
 		"lib": ["ESNext", "ESNext.AsyncIterable", "DOM"]
 	},
+
+  "skipLibCheck": true,
+	"files": ["src/types/*.d.ts"],
 	"types": ["vue", "@types/node"],
-	"files": ["src/types/*.d.ts"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
 }
